@@ -1,80 +1,116 @@
-import json 
+import phonebook
 
-phonebook_path = 'phonebook.json'
+FILEPATH = "phonebook.json"
 
-class Contact():
-    def __init__(self, contact_dict):
-        self.phone = contact_dict['phone']
-        self.name = contact_dict['name']
-        self.desc = contact_dict['desc']
-        self.group = contact_dict['group']
+book = phonebook.PhoneBook()
+book.load(FILEPATH)
 
-class PhoneBook():
-    def __init__(self):
-        self.contacts = list()
+def main_menu():
+    print("=============================")
+    print("Всратый телефонный справочник")
+    print("=============================")
 
-    # Открыть файл справочника
-    def open(self, path):
-        if path:
-            with open(path, 'r', encoding='utf-8') as file:
-                data = json.load(file)
+    while True:
 
-                for contact_data in data:
-                    self.contacts.append(Contact(contact_data)) # Заполняем справочник объектами класса Contact
-
-    def save(self, path):
-        data_to_save = list()
-        for contact in self.contacts:
-            contact_data = {
-                                "name": contact.name,
-                                "phone": contact.phone,
-                                "desc": contact.desc,
-                                "group": contact.group
-                            }
-            data_to_save.append(contact_data)
-            with open(path,'w',encoding='utf-8') as file:
-                json_object = json.dumps(data_to_save, ensure_ascii=False, indent=4)
-                file.write(json_object)
-
-    def find(self, key):
-        found_list = list()
-        for contact in self.contacts:
-            
-            isFound = True
-            
-            if contact.name.find(key):
-                break
-            elif contact.phone.find(key):
-                break
-            elif contact.desc.find(key):
-                break
-            elif contact.group.find(key):
-                break
+        print("Выберите действие:")
+        print("1 - Показать все контакты")
+        print("2 - Создать новый контакт")
+        print("3 - Найти контакт по ключу")
+        print("4 - Изменить контакт")
+        print("5 - Удалить контакт")
+        print("0 - Завершить работу")
+        choise = None
+        while 1:
+            try:
+                choise = int(input("Выбор: "))
+                if choise in range(1,6) or choise == 0:
+                    break
+            except:
+                print("Ошибка: недопустимый формат ответа")
             else:
-                isFound = False
+                print("Ошибка: нет в списке")
+
+        if choise == 0:
+            break
+        
+        # --------------------------------------------
+        # Вывод списка всех контактов
+        elif choise == 1:
+            print("=====================")
+            print("Список всех контактов")
+            for contact in book.contacts:
+                print(f"Имя:      {contact.name}")
+                print(f"Номер:    {contact.phone}")
+                print(f"Описание: {contact.desc}")
+                print(f"Группа:   {contact.group}")
+                print("-----------------")
+
+        # --------------------------------------------
+        # Создание нового контакта
+        elif choise == 2:
+            print("========================")
+            print("Создание нового контакта")
             
-            if isFound:
-                found_list.append(contact
-                                  )
+            name = ""
+            while True:
+                name = input("Имя контакта: ")
+                
+                if name == "":
+                    print("Ошибка: Имя - обязательное поле")
+                    continue
+                if book.find(name, byName=True):
+                    print(name)
+                    print("Ошибка: Контакт уже существует")
+                    continue
+                break
+            phone = ""
+            while True:
+                allowed_symbol = '0123456789+-()'
+                phone = input("Номер телефона: ")
+                
+                # NOTE: Проверка валидности только по разрешенным символам. Однако нет проверки на подобный номер: +++7---911((()))-((124-42-11--   
+                invalid_flag = False
+                for c in phone:
+                    if c not in allowed_symbol:
+                        print(f"Ошибка: Недопустимый символ {c}")
+                        invalid_flag = True
+                        break
+                if invalid_flag == False:
+                    break
+                
+            desc = input("Описание: ")
+            group = input("Группа: ")
+            
+            contact_data = {
+                "name": name,
+                "phone": phone,
+                "desc": desc,
+                "group": group
+            }
+            book.add(contact_data)
+            book.save(FILEPATH)
+            print(f"Контакт {name} успешно добавлен")   
+
+        # --------------------------------------------
+        # Поиск контактов по ключу
+        elif choise == 3:
+            print("========================")
+            print("Поиск контактов по ключу")
+            while True:
+                key = input("Ключ поиска: ")
+                if key == "":
+                    print("Ошибка: Введите хоть что-то")
+                    continue
+                break
+            contacts = book.find(key)
+            print(f"Найдено {len(contacts)} контактов:\n")
+            for contact in contacts:
+                print(f"Имя:      {contact.name}")
+                print(f"Номер:    {contact.phone}")
+                print(f"Описание: {contact.desc}")
+                print(f"Группа:   {contact.group}")
+                print("-----------------")
 
 
 
-    def add(self, contact_data):
-        self.contacts.append(Contact(contact_data))
-
-    def change(self, contact, contact_data):
-        self.contacts.remove(contact)
-
-    def remove(self, contact):
-        self.contacts.remove(contact)        
-
-
-
-
-# print(Contact.att)
-
-# pb = PhoneBook()
-# pb.open(phonebook_path)
-# pb.save(phonebook_path)
-
-# pb.remove(2)
+main_menu()
