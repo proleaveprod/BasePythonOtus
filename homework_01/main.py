@@ -5,161 +5,187 @@ FILEPATH = "phonebook.json"
 book = phonebook.PhoneBook()
 book.load(FILEPATH)
 
+
 def main_menu():
+    """
+    Функция главного меню
+    Здесь принимаем выбор действия через ввод с клавиатуры
+    """
+
     print("=============================")
     print("Всратый телефонный справочник")
     print("=============================")
 
     while True:
-        print()
-        print("Выберите действие:")
         print("1 - Показать все контакты")
         print("2 - Создать новый контакт")
         print("3 - Найти контакт по ключу")
         print("4 - Изменить контакт")
         print("5 - Удалить контакт")
         print("0 - Завершить работу")
-        choise = None
-        while 1:
-            try:
-                choise = int(input("Выбор: "))
-                if choise in range(1,6) or choise == 0:
-                    break
-            except:
-                print("Ошибка: недопустимый формат ответа")
+
+        a = input('Выберите действие: ')
+        if a.isdigit():
+            idx = int(a)
+            if idx == 0:  # Выход из программы
+                break
+            elif idx == 1:  # Вывод списка всех контактов
+                menu_get_contacts()
+            elif idx == 2:  # Создание нового контакта
+                menu_add_new_contact()
+            elif idx == 3:  # Поиск контактов по ключу
+                menu_find_contact()
+            elif idx == 4:  # Изменение существующего контакта
+                menu_change_contact()
+            elif idx == 5:  # Удаление существующего контакта
+                menu_remove_contact()
             else:
-                print("Ошибка: нет в списке")
+                print("Ошибка: Нет такого действия.")
+        else:
+            print("Ошибка: Введите число.")
 
-        if choise == 0:
-            break
-        
-        # Вывод списка всех контактов
-        elif choise == 1:
-            menu_get_contacts()
 
-        # Создание нового контакта
-        elif choise == 2:
-           menu_add_new_contact()   
-
-        # Поиск контактов по ключу
-        elif choise == 3:
-            menu_find_contact()
-
-        # Измениение существующего контакта
-        elif choise == 4:
-            menu_change_contact()
-        
-        # Удаление существующего контакта
-        elif choise == 5:
-            menu_remove_contact()
-        
 def menu_get_contacts():
+    """
+    Вывод списка всех контактов в терминал
+    """
+
     print("=====================")
     print("Список всех контактов")
     print()
     for contact in book.contacts:
         contact.print()
 
+
 def menu_add_new_contact():
+    """
+    Добавление нового контакта в таблицу
+    Имя контакта должно быть уникальным и не должно быть пустым
+    """
+
     print("========================")
     print("Создание нового контакта")
     print()
 
     new_contact = phonebook.Contact()
     while True:
-        new_contact.name = input("Имя контакта: ")
-        
+        new_contact.name = input("Имя контакта:")
+
         if new_contact.name == "":
             print("Ошибка: Имя - обязательное поле")
             continue
         if book.find(new_contact.name, byName=True):
             print("Ошибка: Контакт уже существует")
             continue
-        break
+        break  # При корректном вводе имени нового контакта сразу выйдем из данного цикла
 
-    new_contact.phone = input("Номер телефона: ")    
+    new_contact.phone = input("Номер телефона: ")
     new_contact.desc = input("Описание: ")
     new_contact.group = input("Группа: ")
-    
+
     book.add(new_contact)
     book.save(FILEPATH)
     print(f"Контакт {new_contact.name} успешно добавлен")
 
+
 def menu_find_contact():
+    """
+    Поиск контакта по определенному ключу
+    Ключом может быть любое поле класса Contact.
+    """
+
     print("========================")
     print("Поиск контактов по ключу")
     print()
-    while True:
-        key = input("Ключ поиска: ")
-        if key == "":
-            print("Ошибка: Введите хоть что-то")
-            continue
-        break
+
+    key = input("Ключ поиска (для отмены оставьте поле пустым): ")
+    if key == "":
+        return
+
     contacts = book.find(key)
-    print(f"Найдено {len(contacts)} контактов:\n")
-    for contact in contacts:
-        contact.print()
+
+    if len(contacts) > 0:
+        # Вывод.
+        print(f"Найдено {len(contacts)} контактов:\n")
+        for contact in contacts:
+            contact.print()
+    else:
+        print("Таких контактов не найдено")
+
 
 def menu_change_contact():
+    """
+    Изменение контакта по заданному имени
+    Можно изменить любое поле или все вместе
+    """
     print("========================")
     print("Редактирование контакта")
     print()
-    while True:
-        name = input("Введите имя контакта (для выхода оставьте поле пустым): ")
-        if name == "":
-            return
-        contact = book.find(name,byName=True)
-        if contact:
-            contact = contact[0]
-        if contact:
-            break
-        else:
-            print("Ошибка: Нет такого контакта")
-            break
-    
-    print("Выберите что необходимо изменить:")
-    print("1 - Имя")
-    print("2 - Номер")
-    print("3 - Описание")
-    print("4 - Группа ")
-    print("5 - Все данные")
-    print("0 - Выход")
-    change_choise = None
-    while 1:
-        try:
-            change_choise = int(input("Выбор: "))
-            if change_choise in range(1,6) or change_choise == 0:
-                print()
-                break
-        except:
-            print("Ошибка: недопустимый формат ответа")
-        else:
-            print("Ошибка: нет в списке")
-    
-    if change_choise == 0:
-        return 
 
-    new_contact_data = contact.get_contact_data()
-    if change_choise == 1:
-        new_contact_data['name'] = input(f"Старое имя: {contact.name}\nНовое имя:  ")
-    elif change_choise == 2:
-        new_contact_data['phone'] = input(f"Старый номер: {contact.phone}\nНовый номер:  ")
-    elif change_choise == 3:
-        new_contact_data['desc'] = input(f"Старое описание: {contact.desc}\nНовое описание:  ")
-    elif change_choise == 4:
-        new_contact_data['group'] = input(f"Старая группа: {contact.group}\nНовая группа:  ")
-    elif change_choise == 5:
-        new_contact_data['name'] = input(f"Старое имя: {contact.name}\nНовое имя:  ")
-        new_contact_data['phone'] = input(f"Старый номер: {contact.phone}\nНовый номер:  ")
-        new_contact_data['desc'] = input(f"Старое описание: {contact.desc}\nНовое описание:  ")
-        new_contact_data['group'] = input(f"Старая группа: {contact.group}\nНовая группа:  ")
-    
-    book.remove(contact)
-    book.add(new_contact_data)
-    print(f"Контакт {book.contacts[-1].name} успешно изменен\n")
-    book.save(FILEPATH)
+    name = input("Введите имя контакта (для отмены оставьте поле пустым): ")
+    if name == "":
+        return
+
+    contact = book.find(name, byName=True)
+    if contact:
+        contact = contact[0]
+    else:
+        print("Ошибка: Нет такого контакта")
+        return
+
+    while True:
+        print(f"Изменение контакта {name}")
+        print("Выберите что нужно изменить:")
+        print("1 - Имя")
+        print("2 - Номер")
+        print("3 - Описание")
+        print("4 - Группа ")
+        print("5 - Все данные")
+        print("0 - Выход")
+
+        a = input("Выбор: ")
+        if not a.isdigit():
+            print("Ошибка: Введите число")
+            continue
+        idx = int(a)
+        if idx == 0:
+            return
+
+        new_contact_data = contact.get_contact_data()
+
+        print(new_contact_data)
+
+        if   idx == 1:
+            new_contact_data['name'] = input(f"Старое имя: {contact.name}\nНовое имя:  ")
+        elif idx == 2:
+            new_contact_data['phone'] = input(f"Старый номер: {contact.phone}\nНовый номер:  ")
+        elif idx == 3:
+            new_contact_data['desc'] = input(f"Старое описание: {contact.desc}\nНовое описание:  ")
+        elif idx == 4:
+            new_contact_data['group'] = input(f"Старая группа: {contact.group}\nНовая группа:  ")
+        elif idx == 5:
+            new_contact_data['name'] = input(f"Старое имя: {contact.name}\nНовое имя:  ")
+            new_contact_data['phone'] = input(f"Старый номер: {contact.phone}\nНовый номер:  ")
+            new_contact_data['desc'] = input(f"Старое описание: {contact.desc}\nНовое описание:  ")
+            new_contact_data['group'] = input(f"Старая группа: {contact.group}\nНовая группа:  ")
+        else:
+            print("Ошибка: Выберите действие из списка")
+            continue
+
+        new_contact = phonebook.Contact(new_contact_data)
+        book.remove(contact)
+        book.add(new_contact)
+        book.save(FILEPATH)
+
+        print(f"Контакт {new_contact_data['name']} успешно изменен\n")
+        return
+
 
 def menu_remove_contact():
+    """
+    Удаление контакта по заданному имени
+    """
+    
     print("========================")
     print("Удаление контакта")
     print()
@@ -167,7 +193,7 @@ def menu_remove_contact():
         name = input("Введите имя контакта (для выхода оставьте поле пустым): ")
         if name == "":
             return
-        contact = book.find(name,byName=True)
+        contact = book.find(name, byName=True)
         if contact:
             contact = contact[0]
         if contact:
@@ -183,7 +209,6 @@ def menu_remove_contact():
         print("Контакт успешно удален")
     else:
         print("Контакт не удален")
-
 
 
 main_menu()
