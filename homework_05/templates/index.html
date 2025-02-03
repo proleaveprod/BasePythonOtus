@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Супергерои
+{% endblock %}
+
+{% block content %}
+    {% for i in range(5) %}
+        <p>Поле № {{ i }}</p>
+    {% endfor %}
+{% endblock %}

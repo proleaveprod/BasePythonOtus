@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Страницы не существует
+{% endblock %}
+
+{% block content %}
+
+<!-- Вообще, блок со стайлами должен быть в head, но у меня так организована структура шаблонизатора, 
+     что пихаю контент в head. Можно вообще без этого, но так прикольно:) -->
+
+<style>
+    /* Анимация для текста "404" */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+    }
+
+    .error-code {
+        font-size: 10rem;
+        font-weight: bold;
+        color: #dc3545;
+        animation: bounce 2s infinite;
+    }
+</style> 
+
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div class="text-center">
+        <!-- Анимированный текст "404" -->
+        <div class="error-code">404</div>
+        <!-- Сообщение об ошибке -->
+        <h1 class="h2 text-muted mb-4">Страница не найдена</h1>
+    </div>
+</div>
+{% endblock %}
