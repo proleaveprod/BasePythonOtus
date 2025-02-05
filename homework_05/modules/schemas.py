@@ -1,26 +1,23 @@
 from pydantic import BaseModel, Field
 from typing import Annotated
-from classes import *
 
+from modules.classes import Side
 
 class Character(BaseModel):
     """
     Класс для персонажей комиксов
 
-    Обязательные поля: 
-      1) id - уникальный идентификатор персонажа
+      1) id - уникальный идентификатор персонажа - Обязательное поле
       2) name - имя персонажа
       3) side - сторона света
-    
-    Необязательные поля:
-      1) fullname - полное имя
-      2) desc - краткое описание
-      3) powers- способности
-      4) img_url - ссылка на фото для карточки
+      4) fullname - полное имя
+      5) desc - краткое описание
+      6) powers- способности
+      7) img_url - ссылка на фото для карточки
     """
     id: Annotated[int, Field(...)]
-    name: Annotated[str, Field(..., max_length=20)]
-    side: Annotated[Side, Field(...)]
+    name: Annotated[str, Field(None, max_length=20)]
+    side: Annotated[Side, Field(None)]
 
     fullname: Annotated[str, Field(None, max_length=60)]
     desc: Annotated[str, Field(None, max_length=300)]
