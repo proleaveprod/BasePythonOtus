@@ -5,41 +5,25 @@
 {% endblock %}
 
 {% block content %}
-    <!-- {% for i in range(5) %}
-        <p>Поле № {{ i }}</p>
-    {% endfor %} -->
-    <div class="row">
-        <div class="col-sm-2">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/en/2/21/Web_of_Spider-Man_Vol_1_129-1.png" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Человек-паук</h5>
-                    <p class="card-text">Информация о персонаже какая-то из desc</p>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 d-flex align-items-stretch">
+        {% for character in characters %}
+        <div class="col">
+            <div class="card h-100 d-flex flex-column">
+                <img src="{{ character.img_url }}" class="card-img-top img-fluid" alt="Картинка персонажа {{ character.name }}" style="min-height: 250px; max-height: 250px; object-fit: contain;">
+                <div class="card-body d-flex flex-column flex-grow-1">
+                    <h5 class="card-title">{{ character.name }}</h5>
+                    <p><b>Полное имя: </b>{{ character.fullname }}</p>
+                    <p><b>Сторона света: </b>{{ character.side.value }}</p>
+                    <p class="text-muted small flex-grow-1">{{ character.desc }}</p>
+                    <p class="mt-auto flex-grow-1"><b>Суперспособности:</b><br>
+                        <b class="text-primary small">{{ ", ".join(character.powers) }}</b>
+                    </p>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Полное имя: Питер Дж. Паркер</li>
-                    <li class="list-group-item">Сторона света: Добро</li>
-                    <li class="list-group-item">Способности: Милый паучок, ыфвфывф, фывфыв, фывфыв, фывфыв, фывфыв</li>
-                </ul>
             </div>
         </div>
-        
-        <div class="col-sm-2">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/ru/thumb/b/bd/Wolverine_Marvel.png/375px-Wolverine_Marvel.png" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Россомаха</h5>
-                    <p class="card-text">Информация о персонаже какая-то из desc</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Полное имя: Какой-то такой-то</li>
-                    <li class="list-group-item">Сторона света: Добро</li>
-                    <li class="list-group-item">Способности: Список, способностей, фывфвф, фывф, вфывфывфв, фывфывфыв, ывауеккц, фывфывыфв, фвыфыв</li>
-                </ul>
-            </div>
-        </div>
+        {% endfor %}
     </div>
-        
 
 {% endblock %}
 

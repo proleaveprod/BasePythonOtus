@@ -2,7 +2,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.requests import Request
 from fastapi import APIRouter
 from modules.common import templates
-
+from modules.database import characters
 router = APIRouter(prefix="")
 
 # Обработчик главной страницы с карточками персонажей
@@ -14,7 +14,8 @@ async def get_index(request: Request):
     page = 'index'
     context = {
         "request": request,
-        "current_page": page
+        "current_page": page,
+        "characters": characters.characters
     }
     return templates.TemplateResponse(f'{page}.html', context)
 
