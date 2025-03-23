@@ -49,34 +49,33 @@ class User(TimeStamp, Base):
         unique=False
     )
     
-    posts: Mapped[list["Post"]] = relationship(
-        back_populates="user",
-    )
+    posts: Mapped[list["Post"]] = relationship(back_populates="user") # Отношение one-to-many к модели Post
     
     def __str__(self):
         return f"{self.__class__.__name__} №{self.id}. {self.username} ({self.firstName} {self.lastName})"
     
 class Post(TimeStamp, Base):
+    __tablename__ = 'post'
+    
     title: Mapped[str] = mapped_column( # Заголовок
         String(100),
         unique=False,
         nullable=False
     )
     
-    content: Mapped[str] = mapped_column( # Содержимое
+    body: Mapped[str] = mapped_column( # Содержимое
         Text,
         default="",
         server_default="",
     )
     
-    user_id: Mapped[int] = mapped_column( # ID юзера
-        ForeignKey("user.id"),
-        nullable=False,
+    views: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
     )
     
-    user: Mapped["User"] = relationship( # Связь с юзером
-        back_populates="posts",
-    )
+    userId: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False) # Внешний ключ, ссылающийся на таблицу User
+    user: Mapped["User"] = relationship(back_populates="posts")                # Отношение many-to-one к модели User
     
     def __str__(self):
-        return f"{self.__class__.__name__} №{self.id} (user_id: {self.user_id}). {self.title}"
+        return f"{self.__class__.__name__} №{self.id} (user_id: {self.userId}). {self.title}"
