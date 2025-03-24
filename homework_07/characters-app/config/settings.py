@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,10 +26,9 @@ SECRET_KEY = 'django-insecure-4^bid)^(e^%9&yyu@jz8l_wxh-xbe9*m8_%if$7pcw06a^i7!&
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    # СЮДА УКАЗЫВАЕМ АДРЕСА, С КОТОРЫХ МОЖНО БЫТЬ ДОСТУПНЫМ и ТД
-    # Например, для IoT устрйоства сюда можно вбить:
-    '127.0.0.1',
-    '192.168.0.1'
+    '0.0.0.0', # Доступ к контейнеру из вне
+    'localhost',
+    '127.0.0.1'
 ]
 
 
@@ -83,11 +82,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'user',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',  # или IP-адрес сервера PostgreSQL
-        'PORT': '5432',       # стандартный порт PostgreSQL
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST', 'pg'),
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
 
