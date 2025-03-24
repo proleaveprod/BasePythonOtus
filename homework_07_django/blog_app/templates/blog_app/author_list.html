@@ -1,0 +1,17 @@
+{% extends "blog_app/base.html" %}
+
+{% block title %}Список авторов{% endblock title %}
+
+{% block content %}
+<h1>Список авторов</h1>
+<ul class="list-group">
+    {% for author in authors%}
+    <li class="list-group-item">
+        <h5>Автор {{ author.username }}</h5> 
+        {% if author.fullname %}<p>Полное имя: {{ author.fullname }}</p>{% endif %}
+        {% if author.email %}<p>email: {{ author.email }}</p>{% endif %}    
+    {% empty %}
+    <p>Авторы не найдены</p>    
+    {% endfor %}
+</ul>
+{% endblock content %}

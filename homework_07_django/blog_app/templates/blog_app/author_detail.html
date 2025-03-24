@@ -1,0 +1,9 @@
+{% extends "blog_app/base.html" %}
+
+{% block title %}{{author.username}}{% endblock title %}
+{% block content %}
+<h1>{{author.username}}</h1>
+<small>{{author.fullname}}</small>
+<p>Количество постов: {{ author.posts.count }}</p>
+</ul>
+{% endblock content %}
