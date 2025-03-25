@@ -1,5 +1,6 @@
-
-docker run --name postgres_homework07 -p 5432:5432 -e POSTGRES_USER=user -e POSTGRES_PASSWORD=1234 -e POSTGRES_DB=postgres -d postgres
-
-# docker build -t homework_07_image .
-# docker run -it --rm homework_07_image
+# Домашнее задание №7
+Приложение с постми и авторами:
+1) Выполняется запуск postgres контейнера
+2) По healthcheck pg = OK мы запускаем приложение app
+3) При первом запуске мы выполняем миграцию схем + данных (генерируются с помощью faker Авторы, посты, теги)
+4) Запущено приложение: подключаться по http://127.0.0.1:8000

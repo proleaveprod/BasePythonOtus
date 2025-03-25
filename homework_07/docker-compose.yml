@@ -13,28 +13,19 @@ services:
             - "8000:8000"
 
         command: >
-            sh -c "python manage.py migrate && python manage.py generate_test_data && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
-             
-        # WARNING: Хочу от вас совета! Проверяющий!!!
-        # Я каждый раз запускаю python manage.py migrate + python manage.py generate_test_data при перезапуске контейнера.
-        # Я не нашел нормальной идеи как делать это а) автоматически, б) один раз в) без костылей с созданием пустого-файла 
-        # и проверки его в след раз, чтобы повторно не запускать скрипты миграций схем и данных.
-        # GPT предложил мне: 
-        #command: >
-        #   sh -c "if [ ! -f /app/data/.initialized ]; then
-        #       python manage.py migrate &&
-        #       python manage.py generate_test_data &&
-        #       touch /app/data/.initialized;
-        #   fi &&
-        #   gunicorn config.wsgi:application --bind 0.0.0.0:8000"
-        # - То есть он хочет создавать файл .initialized и в след раз проверять существует ли он, если да, то пропускать миграции
-        # Но тогда еще надо делать volume:) 
-        # Есть идеи как это делать не коряво? Или не коряво - делать руками?)))
-
+            sh -c "if [ ! -f /.initialized ]; then
+                echo 'Running initial setup...';
+                python manage.py migrate;
+                python manage.py generate_test_data;
+                touch /.initialized;
+                echo 'Starting server...';
+            fi &&
+            gunicorn config.wsgi:application --workers 4 --bind 0.0.0.0:8000"
         depends_on:
             pg:
                 condition: service_healthy  # Ждём, пока БД не станет доступна
     
+
     pg:
         container_name: homework_07_postgres
         image: postgres:15
