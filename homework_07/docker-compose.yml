@@ -7,14 +7,30 @@ services:
             dockerfile: characters-app/Dockerfile  # Путь к Dockerfile
             
         env_file:
-            - .env  # Переменные окружения из .env
+            - .env  # Переменные окружения из .env (.env итак по-умолчанию)
         
         ports:
             - "8000:8000"
 
         command: >
-            sh -c "python manage.py migrate && python manage.py generate_test_data && python manage.py runserver 0.0.0.0:8000"
+            sh -c "python manage.py migrate && python manage.py generate_test_data && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
              
+        # WARNING: Хочу от вас совета! Проверяющий!!!
+        # Я каждый раз запускаю python manage.py migrate + python manage.py generate_test_data при перезапуске контейнера.
+        # Я не нашел нормальной идеи как делать это а) автоматически, б) один раз в) без костылей с созданием пустого-файла 
+        # и проверки его в след раз, чтобы повторно не запускать скрипты миграций схем и данных.
+        # GPT предложил мне: 
+        #command: >
+        #   sh -c "if [ ! -f /app/data/.initialized ]; then
+        #       python manage.py migrate &&
+        #       python manage.py generate_test_data &&
+        #       touch /app/data/.initialized;
+        #   fi &&
+        #   gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+        # - То есть он хочет создавать файл .initialized и в след раз проверять существует ли он, если да, то пропускать миграции
+        # Но тогда еще надо делать volume:) 
+        # Есть идеи как это делать не коряво? Или не коряво - делать руками?)))
+
         depends_on:
             pg:
                 condition: service_healthy  # Ждём, пока БД не станет доступна
@@ -22,8 +38,10 @@ services:
     pg:
         container_name: homework_07_postgres
         image: postgres:15
+
         env_file:
-            - .env # Переменные окружения из файла .env
+            - .env # Переменные окружения из файла .env (.env итак по-умолчанию)
+        
         volumes:
             - postgres_data:/var/lib/postgresql/data
         ports:

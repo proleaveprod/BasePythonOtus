@@ -23,14 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4^bid)^(e^%9&yyu@jz8l_wxh-xbe9*m8_%if$7pcw06a^i7!&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(int(os.getenv('APP_DEBUG')))
 
 ALLOWED_HOSTS = [
     '0.0.0.0', # Доступ к контейнеру из вне
     'localhost',
     '127.0.0.1'
 ]
-
 
 # Application definition
 
@@ -79,17 +78,23 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
+db_name     = os.getenv('POSTGRES_DB')
+db_user     = os.getenv('POSTGRES_USER')
+db_password = os.getenv('POSTGRES_PASSWORD')
+db_host     = os.getenv('POSTGRES_HOST')
+db_port     = os.getenv('POSTGRES_PORT')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST', 'pg'),
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        'NAME': db_name,
+        'USER': db_user,
+        'PASSWORD': db_password,
+        'HOST': db_host,
+        'PORT': db_port,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
