@@ -1,0 +1,16 @@
+[tool.poetry]
+package-mode = false
+name = "slm_stat_server"
+version = "0.1.0"
+description = ""
+authors = ["Evgeniy Chervinko <chervinko.ei@starile.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">3.12.0"
+django = "^5.1.7"
+django-clickhouse = "^1.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
