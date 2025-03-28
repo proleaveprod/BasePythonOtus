@@ -5,24 +5,9 @@ import time
 from typing import Dict, List, Optional, Union
 
 class ClickHouseManager:
-    def __init__(
-        self,
-        host: str,
-        password: str,
-        db_name: str = None,
-        user: str = "default",
-        cache_ttl: int = 3600,  # 1 час кеширования
-        max_cache_size: int = 1000
-    ):
-        self.client = Client(
-            host=host,
-            user=user,
-            password=password,
-            secure=True,  # если используете HTTPS
-            verify=True,
-            database=db_name
-        )
-        self.db_name = db_name
+    def __init__(self, host: str, password: str, cache_ttl: int = 3600, max_cache_size: int = 1000):
+        self.client = Client(host=host, password=password)
+        self.db_name = str()
         
         # Кеши для метаданных
         self._databases_cache = TTLCache(maxsize=1, ttl=cache_ttl)
@@ -93,7 +78,7 @@ class ClickHouseManager:
         self,
         query: str,
         params: dict = None,
-        use_cache: bool = True,
+        use_cache: bool = False,
         cache_key: str = None
     ) -> List[tuple]:
         """Выполнить произвольный SQL запрос с кешированием"""
@@ -117,7 +102,7 @@ class ClickHouseManager:
         filters: Dict[str, Union[str, int, float]] = None,
         limit: int = 100,
         db_name: str = None,
-        use_cache: bool = True
+        use_cache: bool = False
     ) -> List[tuple]:
         """Получить данные из таблицы с фильтрацией"""
         db = db_name or self.db_name

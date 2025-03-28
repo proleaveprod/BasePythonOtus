@@ -1,39 +1,33 @@
 from clickhouse import ClickHouseManager
-
+from clickhouse_driver import Client
 
 # Инициализация
-manager = ClickHouseManager(
-    host='l01-dev-slm.sl.netlo',
-    password='1p2a3s4s5',
-    db_name='default',
-    cache_ttl=1800  # 30 минут
-)
-
+manager = ClickHouseManager(host='l01-dev-slm.sl.netlo', password='1p2a3s4s5')
 
 # Получаем список БД
-dbs = manager.get_databases()
-print(f"Available databases: {dbs}")
+# dbs = manager.get_databases()
+# print(f"Available databases: {dbs}")
 
-quit()
 # Выбираем конкретную БД
-manager.switch_database("analytics")
+manager.switch_database("SLM_Stat")
 
 # Получаем список таблиц
-tables = manager.get_tables()
-print(f"Tables in analytics: {tables[:5]}...")
+# tables = manager.get_tables()
+# print(f"Tables in SLM_Stat: {tables[:5]}...")
 
 # Получаем структуру таблицы
-columns = manager.get_columns("Table_114b5d05")
-print(f"Columns: {columns}")
+# columns = manager.get_columns("Common")
 
-# Делаем запрос с фильтрацией
+
 data = manager.get_filtered_data(
-    table_name="Table_114b5d05",
-    columns=["id", "name", "value"],
-    filters={"status": "active", "category": 42},
-    limit=10
+    table_name="Devices",
+    columns=["identifier", "devID", "shortName"],
+    filters={"canVersion": "5.0.0"},
+    limit=2
 )
-print(f"First row: {data[0] if data else None}")
 
-# Очищаем кеш при необходимости
-manager.clear_cache("query")
+data = manager.query("SELECT 1+2")[0][0]
+print(data)
+
+# # Очищаем кеш при необходимости
+# manager.clear_cache("query")
