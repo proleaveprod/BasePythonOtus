@@ -1,4 +1,4 @@
-from clickhouse import ClickHouseManager
+from clickhouse_driver import ClickHouseManager
 from clickhouse_driver import Client
 
 # Инициализация
@@ -12,12 +12,17 @@ manager = ClickHouseManager(host='l01-dev-slm.sl.netlo', password='1p2a3s4s5')
 manager.switch_database("SLM_Stat")
 
 # Получаем список таблиц
-# tables = manager.get_tables()
+
+tables = manager.get_tables()
+print("ТАБЛИЦЫ:")
+for table in tables:
+    print(table)
+
+
 # print(f"Tables in SLM_Stat: {tables[:5]}...")
 
 # Получаем структуру таблицы
-# columns = manager.get_columns("Common")
-
+columns = manager.get_columns("Common")
 
 data = manager.get_filtered_data(
     table_name="Devices",
